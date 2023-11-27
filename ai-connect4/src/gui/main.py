@@ -1,8 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
+from src.controller.controller import Connect4Controller
 
 
-def create_game_board(game_window, rows, cols):
+def update_game_board(game_window, board_2d):
+    rows = len(board_2d)
+    cols = len(board_2d[0])
     game_window.configure(bg="#34495e")  # Change game window background color
     canvas = tk.Canvas(game_window, width=110 * cols, height=110 * rows, bg="#3498db")  # Change canvas size and background color
     canvas.pack(padx=20, pady=20)
@@ -14,7 +17,15 @@ def create_game_board(game_window, rows, cols):
             y1 = row * cell_size
             x2 = x1 + cell_size
             y2 = y1 + cell_size
-            canvas.create_oval(x1, y1, x2, y2, fill="white", outline="black")
+            # Map the integer values to colors
+            if board_2d[row][col] == 2:
+                fill_color = "blue"
+            elif board_2d[row][col] == 1:
+                fill_color = "red"
+            else:
+                fill_color = "white"
+
+            canvas.create_oval(x1, y1, x2, y2, fill=fill_color, outline="black")
 
 
 def start_game():
@@ -32,8 +43,9 @@ def start_game():
     game_window.attributes('-fullscreen', True)  # Set the new window to fullscreen mode
     game_window.configure(bg="#34495e")  # Change game window background color
 
-    # Create the game board
-    create_game_board(game_window, rows, cols)
+    # Create the game board controller
+    controller = Connect4Controller(cols, rows)
+    update_game_board(game_window, controller.get_board())
 
     # Example: Label showing game information
     game_label = tk.Label(game_window,
