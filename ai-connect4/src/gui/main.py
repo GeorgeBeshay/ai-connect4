@@ -6,12 +6,35 @@ from typing import *
 
 
 def create_board_canvas(game_window, rows, cols):
+    """
+        Create a canvas for the game board.
+
+        :param game_window: The window for the game board.
+        :type game_window: tk.Toplevel
+        :param rows: Number of rows in the game board.
+        :type rows: int
+        :param cols: Number of columns in the game board.
+        :type cols: int
+
+        :return: The created canvas for the game board.
+        :rtype: tk.Canvas
+    """
     canvas = tk.Canvas(game_window, width=110 * cols, height=110 * rows, bg="#3498db")
     canvas.pack(padx=20, pady=20)
     return canvas
 
 
 def update_game_board(canvas, controller, cell_size):
+    """
+        Update the game board displayed on the canvas.
+
+        :param canvas: The canvas displaying the game board.
+        :type canvas: tk.Canvas
+        :param controller: The game controller.
+        :type controller: Connect4Controller
+        :param cell_size: Size of each cell on the board.
+        :type cell_size: int
+    """
     board_2d = controller.get_board()
     canvas.delete("all")  # Clear the canvas before updating
 
@@ -36,6 +59,21 @@ def update_game_board(canvas, controller, cell_size):
 
 
 def column_click(event, canvas, controller, cell_size):
+    """
+        Handle the click event on the game board column.
+
+        First, it applies the human player move, specified by the mouse click position, after that
+        the chosen Ai agent method is being called, and the state is updated further by the created one from
+        the Ai method.
+
+        :param event: The click event.
+        :param canvas: The canvas displaying the game board.
+        :type canvas: tk.Canvas
+        :param controller: The game controller.
+        :type controller: Connect4Controller
+        :param cell_size: Size of each cell on the board.
+        :type cell_size: int
+    """
     # Apply the user click
     controller.play(event.x // cell_size)
     update_game_board(canvas, controller, cell_size)
@@ -46,6 +84,15 @@ def column_click(event, canvas, controller, cell_size):
 
 
 def ai_agent_play(state: State) -> State:
+    """
+        Simulate the AI agent's move.
+
+        :param state: The current state of the game.
+        :type state: State
+
+        :return: The updated state after the AI agent's move.
+        :rtype: State
+    """
     approach = var.get()
     if approach == "Pure Minimax":
         # TODO Call the minimax alg that returns a column index.
@@ -56,6 +103,9 @@ def ai_agent_play(state: State) -> State:
 
 
 def start_game():
+    """
+        Start the Connect 4 game.
+    """
     selected_option = var.get()  # Get the selected option (A or B)
     k_value = entry_k.get()  # Get the value of k
     rows = int(entry_rows.get())  # Get the value of rows
@@ -92,6 +142,12 @@ def start_game():
 
 
 def select_option(option):
+    """
+       Select an Ai agent method for the game that to be played.
+
+       :param option: The selected option.
+       :type option: str
+   """
     var.set(option)
     if option == "Pure Minimax":
         option_pure_minimax.config(bg="#27ae60", relief=tk.SUNKEN, fg="white")
