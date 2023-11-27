@@ -29,10 +29,10 @@ class TestStateMethods(unittest.TestCase):
             - Add discs to certain columns.
             - Check the height of these columns.
         """
-        self.state._update_col(0, True)
-        self.state._update_col(0, True)
-        self.state._update_col(2, True)
-        self.state._update_col(6, True)
+        self.state.update_col(0, True)
+        self.state.update_col(0, True)
+        self.state.update_col(2, True)
+        self.state.update_col(6, True)
         '''
         0 0 0 0 0 0 0
         0 0 0 0 0 0 0
@@ -55,7 +55,7 @@ class TestStateMethods(unittest.TestCase):
         """
         for _ in range(HEIGHT):
             for col in range(WIDTH):
-                self.state._update_col(col, True)
+                self.state.update_col(col, True)
         '''
             1 2 1 2 1 2 1
             2 1 2 1 2 1 2
@@ -77,7 +77,7 @@ class TestStateMethods(unittest.TestCase):
                          ])
         for col in range(WIDTH):
             with self.assertRaises(AssertionError):
-                self.state._update_col(col)
+                self.state.update_col(col)
 
     def test_valid_indices(self):
         """
@@ -144,9 +144,9 @@ class TestStateMethods(unittest.TestCase):
             specific cells in the game board and returns the expected values. In addition to checking that the
             method throws exception with given misleading cell index.
         """
-        self.state._update_col(3, True)
+        self.state.update_col(3, True)
         self.assertEqual(self.state._get_cell_val(0, 3, True), 2)
-        self.state._update_col(6, True)
+        self.state.update_col(6, True)
         self.assertEqual(self.state._get_cell_val(0, 6, True), 1)
         self.assertEqual(self.state._get_cell_val(0, 5, True), 0)
         with self.assertRaises(AssertionError):
@@ -159,9 +159,9 @@ class TestStateMethods(unittest.TestCase):
             This test method checks whether the State class correctly tracks and returns the current player's turn.
         """
         self.assertFalse(self.state.is_computer_turn())
-        self.state._update_col(3, True)
+        self.state.update_col(3, True)
         self.assertTrue(self.state.is_computer_turn())
-        self.state._update_col(0, True)
+        self.state.update_col(0, True)
         self.assertFalse(self.state.is_computer_turn())
-        self.state._update_col(5, True)
+        self.state.update_col(5, True)
         self.assertTrue(self.state.is_computer_turn())
