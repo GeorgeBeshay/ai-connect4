@@ -24,5 +24,5 @@ class Connect4Controller:
         Returns:
             list: A 2D list representing the updated game state after the move.
         """
-        self.game_state._update_col(col, True)
+        self.game_state.update_col(col, True)
         return self.game_state.to_2d()
