@@ -69,6 +69,14 @@ class State:
         # Total_bits = width * height + width * math.ceil(math.log2(height + 1))
 
     # ---------------------- Public Methods ----------------------
+    def get_value(self):
+        """
+        Returns the current state integer value
+        :return: State Integer Value
+        :rtype: int
+        """
+        return self.value
+
     def update_col(self, col, change_turn=False):
         """
             Updates the game state based on a selected column.
