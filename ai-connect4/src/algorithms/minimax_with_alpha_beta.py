@@ -48,18 +48,18 @@ class MinimaxWithAlphaBeta:
         :type beta: float
         :return: the value of this state
         """
-        if state.value in self.explored:
-            return self.explored[state.value]
+        if state.get_value() in self.explored:
+            return self.explored[state.get_value()]
 
         evaluated_value = 0
         if level == self.k:
-            if state.value not in self.explored:
+            if state.get_value() not in self.explored:
                 # evaluated_value = get_evaluation(state)
                 # evaluated_value = get_computer_score(state.to_2d())
-                self.explored[state.value] = evaluated_value
+                self.explored[state.get_value()] = evaluated_value
                 return evaluated_value
             else:
-                return self.explored[state.value]
+                return self.explored[state.get_value()]
         # print(state.to_2d())
         # print(state.is_computer_turn())
         if state.is_computer_turn():
@@ -67,7 +67,7 @@ class MinimaxWithAlphaBeta:
         else:
             evaluated_value = self.min_value(state, level, alpha, beta)
 
-        self.explored[state.value] = evaluated_value
+        self.explored[state.get_value()] = evaluated_value
         return evaluated_value
 
     def min_value(self, state: State, level: int, alpha: float, beta: float) -> float:
