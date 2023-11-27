@@ -1,16 +1,23 @@
 import tkinter as tk
 from tkinter import messagebox
 from src.controller.controller import Connect4Controller
+from src.state.state import State
+from typing import *
 
 
-def update_game_board(game_window, board_2d):
+def create_board_canvas(game_window, rows, cols):
+    canvas = tk.Canvas(game_window, width=110 * cols, height=110 * rows, bg="#3498db")
+    canvas.pack(padx=20, pady=20)
+    return canvas
+
+
+def update_game_board(canvas, controller, cell_size):
+    board_2d = controller.get_board()
+    canvas.delete("all")  # Clear the canvas before updating
+
     rows = len(board_2d)
     cols = len(board_2d[0])
-    game_window.configure(bg="#34495e")  # Change game window background color
-    canvas = tk.Canvas(game_window, width=110 * cols, height=110 * rows, bg="#3498db")  # Change canvas size and background color
-    canvas.pack(padx=20, pady=20)
 
-    cell_size = 110  # Increase cell size for a larger board
     for row in range(rows):
         for col in range(cols):
             x1 = col * cell_size
@@ -26,6 +33,24 @@ def update_game_board(game_window, board_2d):
                 fill_color = "white"
 
             canvas.create_oval(x1, y1, x2, y2, fill=fill_color, outline="black")
+
+
+def column_click(event, canvas, controller, cell_size):
+    controller.play(event.x // cell_size)
+    update_game_board(canvas, controller, cell_size)
+    ai_agent_choice = ai_agent_play(controller.get_state())
+    # controller.play(ai_agent_choice)
+    # update_game_board(canvas, controller, cell_size)
+
+
+def ai_agent_play(state: State) -> int:
+    approach = var.get()
+    if approach == "Pure Minimax":
+        # TODO Call the minimax alg that returns a column index.
+        pass
+    else:
+        # TODO Call the minimax with ab pruning alg that returns a column index.
+        pass
 
 
 def start_game():
@@ -45,7 +70,11 @@ def start_game():
 
     # Create the game board controller
     controller = Connect4Controller(cols, rows)
-    update_game_board(game_window, controller.get_board())
+    canvas = create_board_canvas(game_window, rows, cols)
+    update_game_board(canvas, controller, 110)  # Initial board setup
+
+    # Bind the event for column click
+    canvas.bind("<Button-1>", lambda event, p1=canvas, p2=controller, p3=110: column_click(event, p1, p2, p3))
 
     # Example: Label showing game information
     game_label = tk.Label(game_window,

@@ -22,11 +22,26 @@ class Connect4Controller:
         Args:
             col (int): The column in which the player wants to place their piece.
 
-        Returns:
-            list: A 2D list representing the updated game state after the move.
+        :return: list: A 2D list representing the updated game state after the move.
         """
-        self.game_state.update_col(col, True)
+        try:
+            self.game_state.update_col(col, True)
+        except AssertionError as err:
+            print("Oops .. Invalid Indices !!")
         return self.game_state.to_2d()
 
     def get_board(self):
+        """
+        Returns the 2D decimal representation of the game board
+
+        :return: list: A 2D list representing the updated game state after the move.
+        """
         return self.game_state.to_2d()
+
+    def get_state(self):
+        """
+        Returns the current game state object.
+
+        :return: State: The current game state object
+        """
+        return self.game_state
