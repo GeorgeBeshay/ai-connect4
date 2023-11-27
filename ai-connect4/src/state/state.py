@@ -17,9 +17,9 @@ Class:
     - `get_successors`: Generates possible successor states.
     - `to_2d`: Converts the internal state representation to a 2D array.
     - `is_computer_turn`: Returns the current state turn player.
+    - `update_col`: Updates the game state based on a selected column.
 
 Private Methods (in the State class):
-- `_update_col`: Updates the game state based on a selected column.
 - `_update_height`: Manages the internal representation of column heights.
 - `_get_height`: Retrieves the height of a column.
 - `_get_cell_val`: Retrieves the value of a specific cell.
@@ -69,6 +69,34 @@ class State:
         # Total_bits = width * height + width * math.ceil(math.log2(height + 1))
 
     # ---------------------- Public Methods ----------------------
+    def update_col(self, col, change_turn=False):
+        """
+            Updates the game state based on a selected column.
+
+            This method simulates a move by a player, updating the game state
+            and modifying the internal representation accordingly.
+
+            :param col: Column index.
+            :type col: int
+            :param change_turn: Flag to change the player's turn. Defaults to False.
+            :type change_turn: bool
+        """
+        row = self._get_height(col)
+        _check_valid_indices(row, col)
+
+        cell_index = _get_cell_shift(row, col)
+        mask = 1 << cell_index
+
+        if not self.comp_turn:
+            self.value |= mask  # Set the bit to 1
+        else:
+            self.value &= ~mask  # Set the bit to 0
+
+        self._update_height(col)
+
+        if change_turn:
+            self.comp_turn = not self.comp_turn
+
     def get_successors(self):
         """
             Generates possible successor states.
@@ -80,7 +108,7 @@ class State:
         for col_idx in range(WIDTH):
             try:
                 temp_state = State(state_val=self.value)
-                temp_state._update_col(col_idx)
+                temp_state.update_col(col_idx)
                 successors.append(temp_state)
             except AssertionError:
                 pass
@@ -111,34 +139,6 @@ class State:
         return self.comp_turn
 
     # ---------------------- Private Methods ----------------------
-    def _update_col(self, col, change_turn=False):
-        """
-            Updates the game state based on a selected column.
-
-            This method simulates a move by a player, updating the game state
-            and modifying the internal representation accordingly.
-
-            :param col: Column index.
-            :type col: int
-            :param change_turn: Flag to change the player's turn. Defaults to False.
-            :type change_turn: bool
-        """
-        row = self._get_height(col)
-        _check_valid_indices(row, col)
-
-        cell_index = _get_cell_shift(row, col)
-        mask = 1 << cell_index
-
-        if not self.comp_turn:
-            self.value |= mask  # Set the bit to 1
-        else:
-            self.value &= ~mask  # Set the bit to 0
-
-        self._update_height(col)
-
-        if change_turn:
-            self.comp_turn = not self.comp_turn
-
     def _update_height(self, col):
         """
             Manages the internal representation of column heights.
