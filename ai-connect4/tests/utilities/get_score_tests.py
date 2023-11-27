@@ -88,3 +88,28 @@ class GetScoreTests(unittest.TestCase):
         ]
 
         self.assertEqual((2, 0), get_game_score(self.state, 1, 2))
+
+    def test_score8(self):
+        self.state = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1]
+        ]
+        self.assertEqual((2, 0), get_game_score(self.state, 1, 2))
+
+    def test_score9(self):
+        self.state = [
+            [1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [2, 1, 0, 0, 0, 0, 0, 0, 0],
+            [2, 2, 1, 0, 0, 0, 0, 0, 0],
+            [2, 2, 2, 1, 0, 0, 0, 0, 0],
+            [2, 2, 2, 2, 0, 0, 0, 0, 0],
+            [2, 2, 2, 2, 0, 1, 0, 0, 0],
+            [2, 2, 2, 2, 0, 2, 1, 0, 0],
+            [2, 2, 2, 2, 0, 2, 2, 1, 0],
+            [2, 2, 2, 2, 0, 2, 2, 2, 1]
+        ]
+        self.assertEqual(2, get_game_score(self.state, 1, 2)[0])

@@ -19,18 +19,14 @@ def count_in_rows(state: List[List[int]], player: int) -> int:
     score = 0
 
     for i in range(len(state)):
-        max_sequence = 0
         current_sequence = 0
         for j in range(len(state[0])):
             if state[i][j] == player:
                 current_sequence += 1
+                if current_sequence >= 4:
+                    score += 1
             else:
-                max_sequence = max(max_sequence, current_sequence)
                 current_sequence = 0
-
-        max_sequence = max(max_sequence, current_sequence)
-        if max_sequence >= 4:
-            score += max_sequence - 4 + 1
 
     return score
 
@@ -39,18 +35,14 @@ def count_in_columns(state: List[List[int]], player: int) -> int:
     score = 0
 
     for j in range(len(state[0])):
-        max_sequence = 0
         current_sequence = 0
         for i in range(len(state)):
             if state[i][j] == player:
                 current_sequence += 1
+                if current_sequence >= 4:
+                    score += 1
             else:
-                max_sequence = max(max_sequence, current_sequence)
                 current_sequence = 0
-
-        max_sequence = max(max_sequence, current_sequence)
-        if max_sequence >= 4:
-            score += max_sequence - 4 + 1
 
     return score
 
@@ -73,19 +65,15 @@ def _in_main_diagonals(state: List[List[int]], player: int, i: int, j: int) -> i
     score = 0
     cols = len(state[0])
     current_sequence = 0
-    max_sequence = 0
     while j < cols and i >= 0:
         if state[i][j] == player:
             current_sequence += 1
+            if current_sequence >= 4:
+                score += 1
         else:
-            max_sequence = max(max_sequence, current_sequence)
             current_sequence = 0
         j += 1
         i -= 1
-
-    max_sequence = max(max_sequence, current_sequence)
-    if max_sequence >= 4:
-        score += max_sequence - 4 + 1
 
     return score
 
@@ -107,21 +95,17 @@ def count_in_secondary_diagonals(state: List[List[int]], player: int) -> int:
 def _in_secondary_diagonals(state: List[List[int]], player: int, i: int, j: int) -> int:
     score = 0
     current_sequence = 0
-    max_sequence = 0
     rows = len(state)
     cols = len(state[0])
 
     while j < cols and i < rows:
         if state[i][j] == player:
             current_sequence += 1
+            if current_sequence >= 4:
+                score += 1
         else:
-            max_sequence = max(max_sequence, current_sequence)
             current_sequence = 0
         i += 1
         j += 1
-
-    max_sequence = max(max_sequence, current_sequence)
-    if max_sequence >= 4:
-        score += max_sequence - 4 + 1
 
     return score
