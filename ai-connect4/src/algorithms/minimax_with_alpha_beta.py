@@ -1,12 +1,13 @@
 from typing import *
 from src.state.state import State
-
+from src.tree.treeRepresentation import print_tree
 
 class MinimaxWithAlphaBeta:
 
     def __init__(self, k: int):
         self.k = k
         self.explored = {}
+        self.tree = {}
 
     def run_minimax_with_alpha_beta(self, initial_state: State) -> Tuple[float, State]:
         """
@@ -74,27 +75,38 @@ class MinimaxWithAlphaBeta:
         v = float('inf')
         # print("In min: ")
         successors = state.get_successors()
+        self.tree[state.get_value()] = {"value": v, "children": {}}
         for successor in successors:
-            v = min(v, self.value(successor, level + 1, alpha, beta))
+            child_value = self.value(successor, level + 1, alpha, beta)
+            v = min(v, child_value)
+            self.tree[state.get_value()]["children"][successor.get_value()] = {"value": child_value}
             if v <= alpha:
+                self.tree[state.get_value()]["value"] = v
                 return v
             beta = min(beta, v)
+        self.tree[state.get_value()]["value"] = v
         return v
 
     def max_value(self, state: State, level: int, alpha: float, beta: float) -> float:
         v = - float('inf')
         # print("In max: ")
         successors = state.get_successors()
+        self.tree[state.get_value()] = {"value": v, "children": {}}
         for successor in successors:
-            v = max(v, self.value(successor, level + 1, alpha, beta))
+            child_value = self.value(successor, level + 1, alpha, beta)
+            v = max(v, child_value)
+            self.tree[state.get_value()]["children"][successor.get_value()] = {"value": child_value}
             if v >= beta:
+                self.tree[state.get_value()]["value"] = v
                 return v
             alpha = max(alpha, v)
+        self.tree[state.get_value()]["value"] = v
         return v
 
-# k = 4
-# minimax = MinimaxWithAlphaBeta(k)
-# state = State(True, 0)
-# (a, step) = minimax.run_minimax_with_alpha_beta(state)
+k = 4
+minimax = MinimaxWithAlphaBeta(k)
+state = State(True, 0)
+(a, step) = minimax.run_minimax_with_alpha_beta(state)
+print_tree(minimax.tree,0)
 # print(a)
 # print(step.to_2d())
