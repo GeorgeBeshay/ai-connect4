@@ -41,11 +41,11 @@ def column_click(event, canvas, controller, cell_size):
     update_game_board(canvas, controller, cell_size)
 
     # Apply the Ai agent move
-    controller.set_state(ai_agent_play(controller.get_state()))
-    update_game_board(canvas, controller, cell_size)
+    # controller.set_state(ai_agent_play(controller.get_state()))
+    # update_game_board(canvas, controller, cell_size)
 
 
-def ai_agent_play(state: State) -> int:
+def ai_agent_play(state: State) -> State:
     approach = var.get()
     if approach == "Pure Minimax":
         # TODO Call the minimax alg that returns a column index.
