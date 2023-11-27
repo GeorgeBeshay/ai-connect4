@@ -107,8 +107,8 @@ class State:
         successors = []
         for col_idx in range(WIDTH):
             try:
-                temp_state = State(state_val=self.value)
-                temp_state.update_col(col_idx)
+                temp_state = State(state_val=self.value, comp_turn=self.is_computer_turn())
+                temp_state.update_col(col_idx, True)
                 successors.append(temp_state)
             except AssertionError:
                 pass
