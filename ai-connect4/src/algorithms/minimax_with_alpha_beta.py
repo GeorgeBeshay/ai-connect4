@@ -1,6 +1,5 @@
 from typing import *
 from src.state.state import State
-from src.utilities.get_score import get_computer_score
 
 
 class MinimaxWithAlphaBeta:
@@ -61,8 +60,9 @@ class MinimaxWithAlphaBeta:
                 return evaluated_value
             else:
                 return self.explored[state.value]
-
-        if state.is_computer_turn:
+        print(state.to_2d())
+        print(state.is_computer_turn())
+        if state.is_computer_turn():
             evaluated_value = self.max_value(state, level, alpha, beta)
         else:
             evaluated_value = self.min_value(state, level, alpha, beta)
@@ -72,6 +72,7 @@ class MinimaxWithAlphaBeta:
 
     def min_value(self, state: State, level: int, alpha: float, beta: float) -> float:
         v = float('inf')
+        print("In min: ")
         successors = state.get_successors()
         for successor in successors:
             v = min(v, self.value(successor, level + 1, alpha, beta))
@@ -82,6 +83,7 @@ class MinimaxWithAlphaBeta:
 
     def max_value(self, state: State, level: int, alpha: float, beta: float) -> float:
         v = - float('inf')
+        print("In max: ")
         successors = state.get_successors()
         for successor in successors:
             v = max(v, self.value(successor, level + 1, alpha, beta))
@@ -89,3 +91,10 @@ class MinimaxWithAlphaBeta:
                 return v
             alpha = max(alpha, v)
         return v
+
+k = 4
+minimax = MinimaxWithAlphaBeta(k)
+state = State(True, 0)
+(a, step) = minimax.run_minimax_with_alpha_beta(state)
+print(a)
+print(step.to_2d())
