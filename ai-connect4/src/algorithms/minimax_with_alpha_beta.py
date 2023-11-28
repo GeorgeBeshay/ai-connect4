@@ -1,6 +1,7 @@
 from typing import *
 from src.state.state import State
 from src.tree.tree_representation import Tree
+from src.utilities.get_heuristic import calculate_heuristic
 
 
 class MinimaxWithAlphaBeta:
@@ -59,8 +60,7 @@ class MinimaxWithAlphaBeta:
         evaluated_value = 0
         if level == self.k:
             if state.get_value() not in self.explored:
-                # evaluated_value = get_evaluation(state)
-                # evaluated_value = get_computer_score(state.to_2d())
+                evaluated_value = calculate_heuristic(state.to_2d(), 1, 2)
                 self.explored[state.get_value()] = evaluated_value
                 return evaluated_value
             else:
@@ -105,3 +105,11 @@ class MinimaxWithAlphaBeta:
             alpha = max(alpha, v)
 
         return v
+
+# k = 3
+# minimax_with = MinimaxWithAlphaBeta(k)
+# state = State(True, 0)
+# print("trial state = ", state.to_2d())
+# print("turn is comp: ",state.is_computer_turn())
+# (a, step) = minimax_with.run_minimax_with_alpha_beta(state)
+# print(step.to_2d())
