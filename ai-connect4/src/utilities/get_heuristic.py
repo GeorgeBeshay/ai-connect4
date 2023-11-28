@@ -24,14 +24,14 @@ def check_three(state: List[List[int]], player_piece: int):
                 # check horizontal and empty to the left
                 if state[r][c] == state[r][c - 1] == state[r][c - 2] == player_piece and state[r][c - 3] == 0:
                     three_count += 1
-                    if r < ROW_COUNT - 3:
-                        # check diagonal and empty up
-                        if state[r][c] == state[r + 1][c - 1] == state[r + 2][c - 2] == player_piece and state[r + 3][
-                            c - 3] == 0:
-                            three_count += 1
+                if r < ROW_COUNT - 3:
+                    # check diagonal and empty up
+                    if state[r][c] == state[r + 1][c - 1] == state[r + 2][c - 2] == player_piece and state[r + 3][
+                        c - 3] == 0:
+                        three_count += 1
 
-            if r < ROW_COUNT - 3:
-                if state[r][c] == state[r + 1][c] == state[r + 2][c - 2] == player_piece and state[r + 3][c - 3] == 0:
+            if r >= 3:
+                if state[r][c] == state[r - 1][c] == state[r - 2][c] == player_piece and state[r - 3][c] == 0:
                     three_count += 1
 
     return three_count
@@ -58,14 +58,14 @@ def check_two(state: List[List[int]], player_piece: int):
                 # check horizontal and empty to the left
                 if state[r][c] == state[r][c - 1] == player_piece and state[r][c - 2] == state[r][c - 3] == 0:
                     two_count += 1
-                    if r < ROW_COUNT - 3:
-                        # check diagonal and empty up
-                        if state[r][c] == state[r + 1][c - 1] == player_piece and state[r + 2][c - 2] == state[r + 3][
-                            c - 3] == 0:
-                            two_count += 1
+                if r < ROW_COUNT - 3:
+                    # check diagonal and empty up
+                    if state[r][c] == state[r + 1][c - 1] == player_piece and state[r + 2][c - 2] == state[r + 3][
+                        c - 3] == 0:
+                        two_count += 1
 
-            if r < ROW_COUNT - 3:
-                if state[r][c] == state[r + 1][c] == player_piece and state[r + 2][c - 2] == state[r + 3][c - 3] == 0:
+            if r >= 2:
+                if state[r][c] == state[r - 1][c] == player_piece and state[r - 2][c] == 0:
                     two_count += 1
     return two_count
 
