@@ -1,13 +1,14 @@
 from typing import *
 from src.state.state import State
-from src.tree.treeRepresentation import print_tree
+from src.tree.tree_representation import Tree
+
 
 class MinimaxWithAlphaBeta:
 
     def __init__(self, k: int):
         self.k = k
         self.explored = {}
-        self.tree = {}
+        self.tree = None
 
     def run_minimax_with_alpha_beta(self, initial_state: State) -> Tuple[float, State]:
         """
@@ -19,6 +20,7 @@ class MinimaxWithAlphaBeta:
 
         :return: Tuple of the max value the computer can get and the state of next step
         """
+        self.tree = Tree((initial_state.get_value(), 0))
         self.explored = {}
         successors = initial_state.get_successors()
         alpha = - float('inf')
@@ -26,10 +28,12 @@ class MinimaxWithAlphaBeta:
         next_step = initial_state
         for successor in successors:
             current_value = self.value(successor, 1, alpha, beta)
+            self.tree.add_child_to_node(initial_state.get_value(), (successor.get_value(), current_value))
             if current_value > alpha:
                 next_step = successor
                 alpha = current_value
 
+        self.tree.set_root((initial_state.get_value(), alpha))
         return alpha, next_step
 
     def value(self, state: State, level: int, alpha: float, beta: float) -> float:
@@ -61,8 +65,6 @@ class MinimaxWithAlphaBeta:
                 return evaluated_value
             else:
                 return self.explored[state.get_value()]
-        # print(state.to_2d())
-        # print(state.is_computer_turn())
         if state.is_computer_turn():
             evaluated_value = self.max_value(state, level, alpha, beta)
         else:
@@ -73,40 +75,33 @@ class MinimaxWithAlphaBeta:
 
     def min_value(self, state: State, level: int, alpha: float, beta: float) -> float:
         v = float('inf')
-        # print("In min: ")
         successors = state.get_successors()
-        self.tree[state.get_value()] = {"value": v, "children": {}}
+
         for successor in successors:
             child_value = self.value(successor, level + 1, alpha, beta)
             v = min(v, child_value)
-            self.tree[state.get_value()]["children"][successor.get_value()] = {"value": child_value}
+
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
+
             if v <= alpha:
-                self.tree[state.get_value()]["value"] = v
                 return v
+
             beta = min(beta, v)
-        self.tree[state.get_value()]["value"] = v
         return v
 
     def max_value(self, state: State, level: int, alpha: float, beta: float) -> float:
         v = - float('inf')
-        # print("In max: ")
         successors = state.get_successors()
-        self.tree[state.get_value()] = {"value": v, "children": {}}
+
         for successor in successors:
             child_value = self.value(successor, level + 1, alpha, beta)
             v = max(v, child_value)
-            self.tree[state.get_value()]["children"][successor.get_value()] = {"value": child_value}
-            if v >= beta:
-                self.tree[state.get_value()]["value"] = v
-                return v
-            alpha = max(alpha, v)
-        self.tree[state.get_value()]["value"] = v
-        return v
 
-k = 4
-minimax = MinimaxWithAlphaBeta(k)
-state = State(True, 0)
-(a, step) = minimax.run_minimax_with_alpha_beta(state)
-print_tree(minimax.tree,0)
-# print(a)
-# print(step.to_2d())
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
+
+            if v >= beta:
+                return v
+
+            alpha = max(alpha, v)
+
+        return v
