@@ -1,102 +1,134 @@
 from typing import List
 
 from src.utilities.get_score import get_player_score
+from src.state.state import _check_valid_indices
 
 
-def check_three(state: List[List[int]], player_piece: int):
-    three_count = 0
-    ROW_COUNT = len(state)
-    COL_COUNT = len(state[0])
-    for r in range(ROW_COUNT):
-        for c in range(COL_COUNT):
-            if c < COL_COUNT - 3:
-                # check horizontal and empty to the right
-                if state[r][c] == state[r][c + 1] == state[r][c + 2] == player_piece and state[r][c + 3] == 0:
-                    three_count += 1
-
-                if r < ROW_COUNT - 3:
-                    # check diagonal and empty down
-                    if state[r][c] == state[r + 1][c + 1] == state[r + 2][c + 2] == player_piece and state[r + 3][
-                        c + 3] == 0:
-                        three_count += 1
-
-            elif c >= COL_COUNT - 3:
-                # check horizontal and empty to the left
-                if state[r][c] == state[r][c - 1] == state[r][c - 2] == player_piece and state[r][c - 3] == 0:
-                    three_count += 1
-                if r < ROW_COUNT - 3:
-                    # check diagonal and empty up
-                    if state[r][c] == state[r + 1][c - 1] == state[r + 2][c - 2] == player_piece and state[r + 3][
-                        c - 3] == 0:
-                        three_count += 1
-
-            if r >= 3:
-                if state[r][c] == state[r - 1][c] == state[r - 2][c] == player_piece and state[r - 3][c] == 0:
-                    three_count += 1
-
-    return three_count
+def get_boundary_pts(state):
+    pts = []
+    for row in range(len(state)):
+        pts.append((row, 0))
+        pts.append((row, len(state[0]) - 1))
+    for col in range(1, len(state[0])):
+        pts.append((0, col))
+    return pts
 
 
-def check_two(state: List[List[int]], player_piece: int):
-    two_count = 0
-    ROW_COUNT = len(state)
-    COL_COUNT = len(state[0])
-    for r in range(ROW_COUNT):
-        for c in range(COL_COUNT):
-            if c < COL_COUNT - 3:
-                # check horizontal and empty to the right
-                if state[r][c] == state[r][c + 1] == player_piece and state[r][c + 2] == state[r][c + 3] == 0:
-                    two_count += 1
-
-                if r < ROW_COUNT - 3:
-                    # check diagonal and empty down
-                    if state[r][c] == state[r + 1][c + 1] == player_piece and state[r + 2][c + 2] == state[r + 3][
-                        c + 3] == 0:
-                        two_count += 1
-
-            elif c >= COL_COUNT - 3:
-                # check horizontal and empty to the left
-                if state[r][c] == state[r][c - 1] == player_piece and state[r][c - 2] == state[r][c - 3] == 0:
-                    two_count += 1
-                if r < ROW_COUNT - 3:
-                    # check diagonal and empty up
-                    if state[r][c] == state[r + 1][c - 1] == player_piece and state[r + 2][c - 2] == state[r + 3][
-                        c - 3] == 0:
-                        two_count += 1
-
-            if r >= 2:
-                if state[r][c] == state[r - 1][c] == player_piece and state[r - 2][c] == 0:
-                    two_count += 1
-    return two_count
+def calc_row(state: List[List[int]], player_piece: int):
+    score = 0
+    for row in range(len(state)):
+        accumulator = 0
+        longest_chain = 0
+        for col in range(len(state[0])):
+            if state[row][col] == player_piece or state[row][col] == 0:
+                if state[row][col] == player_piece:
+                    accumulator += 1
+                # accumulator += 1
+                longest_chain += 1
+            else:
+                if longest_chain > 3:
+                    score += (longest_chain - 3) * 25 * accumulator
+                # score += (longest_chain - 3) * 100 - (longest_chain - accumulator) * 25
+                accumulator = 0
+                longest_chain = 0
+        if longest_chain > 3:
+            score += (longest_chain - 3) * 25 * accumulator
+    return score
 
 
-def check_more_than_three(state: List[List[int]], player_piece: int):
-    return get_player_score(state, player_piece)
+def calc_col(state: List[List[int]], player_piece: int):
+    score = 0
+    for col in range(len(state[0])):
+        accumulator = 0
+        longest_chain = 0
+        for row in range(len(state)):
+            if state[row][col] == player_piece or state[row][col] == 0:
+                if state[row][col] == player_piece:
+                    accumulator += 1
+                # accumulator += 1
+                longest_chain += 1
+            else:
+                if longest_chain > 3:
+                    score += (longest_chain - 3) * 25 * accumulator
+                # score += (longest_chain - 3) * 100 - (longest_chain - accumulator) * 25
+                accumulator = 0
+                longest_chain = 0
+        if longest_chain > 3:
+            score += (longest_chain - 3) * 25 * accumulator
+    return score
+
+
+def calc_diagonal(state: List[List[int]], player_piece: int):
+    boundary_pts = get_boundary_pts(state)
+    score = 0
+    for pt in boundary_pts:
+        # up left
+
+        accumulator = 0
+        longest_chain = 0
+        i = 0
+        # while _check_valid_indices(pt[0] - i, pt[1] - i):
+        while (0 <= pt[0] - i) and (0 <= pt[1] - i):
+            if state[pt[0] - i][pt[1] - i] == player_piece or state[pt[0] - i][pt[1] - i] == 0:
+                if state[pt[0] - i][pt[1] - i] == player_piece:
+                    accumulator += 1
+                # accumulator += 1
+                longest_chain += 1
+            else:
+                if longest_chain > 3:
+                    score += (longest_chain - 3) * 25 * accumulator
+                # score += (longest_chain - 3) * 100 - (longest_chain - accumulator) * 25
+                accumulator = 0
+                longest_chain = 0
+            i += 1
+        if longest_chain > 3:
+            score += (longest_chain - 3) * 25 * accumulator
+
+        # up right
+        accumulator = 0
+        longest_chain = 0
+        i = 0
+        # while _check_valid_indices(pt[0] + i, pt[1] + i):
+        while (0 <= pt[0] - i) and (pt[1] + i < len(state[0])):
+            if (state[pt[0] - i][pt[1] + i] == player_piece) or (state[pt[0] - i][pt[1] + i] == 0):
+                if state[pt[0] - i][pt[1] + i] == player_piece:
+                    accumulator += 1
+                # accumulator += 1
+                longest_chain += 1
+            else:
+                if longest_chain > 3:
+                    score += (longest_chain - 3) * 25 * accumulator
+                # score += (longest_chain - 3) * 100 - (longest_chain - accumulator) * 25
+                accumulator = 0
+                longest_chain = 0
+            i += 1
+        if longest_chain > 3:
+            score += (longest_chain - 3) * 25 * accumulator
+
+    return score
 
 
 def calculate_heuristic(state: List[List[int]], computer_piece: int, human_piece: int) -> float:
-    three_ai_score = check_three(state, computer_piece)
-    two_ai_score = check_two(state, computer_piece)
-    more_than_three_ai_score = check_more_than_three(state, computer_piece)
-    three_human_score = check_three(state, human_piece)
-    two_human_score = check_two(state, human_piece)
-    more_than_three_human_score = check_more_than_three(state, human_piece)
-    # print("three_ai_score = ", three_ai_score, ", two_ai_score = ", two_ai_score, ", more_than_three_ai_score = ",more_than_three_ai_score)
-    # print("three_human_score = ", three_human_score, ", two_human_score = ", two_human_score, ", more_than_three_human_score = ",more_than_three_human_score)
+    ai_rows = calc_row(state, computer_piece)
+    ai_cols = calc_col(state, computer_piece)
+    ai_diagonal = calc_diagonal(state, computer_piece)
 
-    heuristic = float(100 * more_than_three_ai_score + 75 * three_ai_score + 50 * two_ai_score - (
-            100 * more_than_three_human_score + 75 * three_human_score + 50 * two_human_score))
+    player_rows = calc_row(state, human_piece)
+    player_cols = calc_col(state, human_piece)
+    player_diagonal = calc_diagonal(state, human_piece)
 
+    heuristic = ai_rows + ai_diagonal + ai_cols - player_rows - player_cols - player_diagonal
     return heuristic
 
-# state = [
-#     [1, 0, 0, 0, 0, 0, 2],
-#     [1, 1, 1, 0, 0, 0, 2],
-#     [0, 1, 2, 2, 2, 0, 2],
-#     [0, 1, 1, 0, 2, 2, 2],
-#     [1, 1, 1, 1, 1, 1, 2],
-#     [1, 1, 2, 2, 1, 2, 2]
-# ]
-#
-# r = calculate_heuristic(state, 1, 2)
-# print("r = ", r)
+
+state_ = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 1]
+]
+
+r = calculate_heuristic(state_, 1, 2)
+print("r = ", r)
