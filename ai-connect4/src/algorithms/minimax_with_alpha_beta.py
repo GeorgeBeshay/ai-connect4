@@ -77,9 +77,10 @@ class MinimaxWithAlphaBeta:
 
         for successor in successors:
             child_value = self.value(successor, level + 1, alpha, beta)
-            v = min(v, child_value)
 
-            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+
+            v = min(v, child_value)
 
             if v <= alpha:
                 return v
@@ -93,9 +94,10 @@ class MinimaxWithAlphaBeta:
 
         for successor in successors:
             child_value = self.value(successor, level + 1, alpha, beta)
-            v = max(v, child_value)
 
-            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+
+            v = max(v, child_value)
 
             if v >= beta:
                 return v

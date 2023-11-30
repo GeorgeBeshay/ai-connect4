@@ -93,8 +93,10 @@ class Minimax:
 
         for successor in successors:
             child_value = self.value(successor, level + 1)
+
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+
             v = max(v, child_value)
-            self.tree.add_child_to_node(state.get_value(),(successor.get_value(), v))
 
         return v
 
@@ -114,8 +116,10 @@ class Minimax:
 
         for successor in successors:
             child_value = self.value(successor, level + 1)
+
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+
             v = min(v, child_value)
-            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
 
         return v
 
