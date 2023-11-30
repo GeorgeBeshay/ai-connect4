@@ -106,10 +106,11 @@ class MinimaxWithAlphaBeta:
 
         return v
 
-# k = 3
+
+# k = 13
 # minimax_with = MinimaxWithAlphaBeta(k)
 # state = State(True, 0)
 # print("trial state = ", state.to_2d())
-# print("turn is comp: ",state.is_computer_turn())
+# print("turn is comp: ", state.is_computer_turn())
 # (a, step) = minimax_with.run_minimax_with_alpha_beta(state)
 # print(step.to_2d())

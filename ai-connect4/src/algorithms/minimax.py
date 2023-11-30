@@ -136,10 +136,12 @@ class Minimax:
 # trial_state.update_col(2, True)
 # trial_state.update_col(0, True)
 # trial_state.update_col(6, True)
-#
-# k = 3
-# print("trialstate = ", trial_state.to_2d())
-# print("turn is comp: ",trial_state.is_computer_turn())
-# minimax_instance = Minimax(k)
-# (result, next_state) = minimax_instance.run_minimax(trial_state)
-# print("Result = ", result, ", next_state = ", next_state.to_2d())
+
+
+# k = 10
+# minimax_with = Minimax(k)
+# state = State(True, 0)
+# print("trial state = ", state.to_2d())
+# print("turn is comp: ", state.is_computer_turn())
+# (a, step) = minimax_with.run_minimax(state)
+# print(step.to_2d())

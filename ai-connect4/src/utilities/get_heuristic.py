@@ -121,14 +121,14 @@ def calculate_heuristic(state: List[List[int]], computer_piece: int, human_piece
     return heuristic
 
 
-state_ = [
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0, 1]
-]
-
-r = calculate_heuristic(state_, 1, 2)
-print("r = ", r)
+# state_ = [
+#     [0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0],
+#     [1, 0, 0, 0, 0, 0, 1]
+# ]
+#
+# r = calculate_heuristic(state_, 1, 2)
+# print("r = ", r)
