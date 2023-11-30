@@ -2,6 +2,8 @@ import random
 from typing import *
 from src.state.state import State
 from src.tree.tree_representation import Tree
+from src.utilities.get_heuristic import calculate_heuristic
+
 """
 Connect 4 Minimax Algorithm
 
@@ -56,8 +58,6 @@ class Minimax:
         :return: Evaluated value of the current state.
         :rtype: int
         """
-        # print("is the turn of computer: ", state.is_computer_turn())
-        # print("state.value = ",state.get_value())
 
         if state.get_value() in self.explored:
             return self.explored[state.get_value()]
@@ -65,11 +65,7 @@ class Minimax:
         evaluated_value = 0
 
         if level == self.k:  # terminal state
-            # TODO: evaluate the state
-            # evaluated_value = get_evaluation(state)
-            # evaluated_value = get_computer_score(state.to_2d())
-            evaluated_value = random.randint(-100, 100)
-            # print("evaluated_value = ", evaluated_value)
+            evaluated_value = calculate_heuristic(state.to_2d(), 1, 2)
             self.explored[state.get_value()] = evaluated_value
             return evaluated_value
         if state.is_computer_turn():  # max
@@ -98,7 +94,7 @@ class Minimax:
         for successor in successors:
             child_value = self.value(successor, level + 1)
             v = max(v, child_value)
-            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
+            self.tree.add_child_to_node(state.get_value(),(successor.get_value(), v))
 
         return v
 
@@ -122,3 +118,30 @@ class Minimax:
             self.tree.add_child_to_node(state.get_value(), (successor.get_value(), v))
 
         return v
+
+# '''
+# Assume computer = 1, Human = 2, Empty = 0
+#     0 0 0 0 0 0 0
+#     0 0 0 0 0 0 0
+#     0 0 0 0 0 0 0
+#     1 0 1 0 0 0 0
+#     1 0 2 0 0 0 2
+#     2 0 2 0 0 0 1
+# '''
+# trial_state = State()
+# trial_state.update_col(0, True)
+# trial_state.update_col(0, True)
+# trial_state.update_col(2, True)
+# trial_state.update_col(6, True)
+# trial_state.update_col(2, True)
+# trial_state.update_col(0, True)
+# trial_state.update_col(6, True)
+
+
+# k = 10
+# minimax_with = Minimax(k)
+# state = State(True, 0)
+# print("trial state = ", state.to_2d())
+# print("turn is comp: ", state.is_computer_turn())
+# (a, step) = minimax_with.run_minimax(state)
+# print(step.to_2d())
