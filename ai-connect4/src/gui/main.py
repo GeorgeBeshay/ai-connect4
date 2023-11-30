@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 from tkinter import messagebox, ttk
 from src.controller.controller import Connect4Controller
@@ -118,6 +119,10 @@ def update_score_label(controller):
                       bg="#34495e", fg="white")
 
 
+total_time = 0
+counter = 0
+
+
 def ai_agent_play(state: State) -> State:
     """
         Simulate the AI agent's move.
@@ -128,18 +133,37 @@ def ai_agent_play(state: State) -> State:
         :return: The updated state after the AI agent's move.
         :rtype: State
     """
+    global total_time, counter
     approach = var.get()
     if approach == "Pure Minimax":
         minimax_solver = Minimax(int(entry_k.get()))
+        start_time = time.time()
         new_state = minimax_solver.run_minimax(state)[1]
+        end_time = time.time()
         if display_minimax_tree:
             minimax_solver.tree.display_tree()
+
+        elapsed_time = end_time - start_time
+        total_time += elapsed_time
+        counter += 1
+        # print(f"AI move took {elapsed_time} seconds")
+        # print(f"Counter = {counter}")
+        print(f"Average time = {total_time / counter} seconds")
         return new_state
     else:
         minimax_ab_solver = MinimaxWithAlphaBeta(int(entry_k.get()))
+        start_time = time.time()
         new_state = minimax_ab_solver.run_minimax_with_alpha_beta(state)[1]
+        end_time = time.time()
         if display_minimax_tree:
             minimax_ab_solver.tree.display_tree()
+
+        elapsed_time = end_time - start_time
+        total_time += elapsed_time
+        counter += 1
+        # print(f"AI move took {elapsed_time} seconds")
+        print(f"Average time = {total_time / counter} seconds")
+        # print(f"Counter = {counter}")
         return new_state
 
 
@@ -172,7 +196,8 @@ def start_game():
     update_game_board(canvas, controller, cell_size=4620 // (rows * cols))  # Initial board setup
 
     # Bind the event for column click
-    canvas.bind("<Button-1>", lambda event, p1=canvas, p2=controller, p3=4620 // (rows * cols): column_click(event, p1, p2, p3))
+    canvas.bind("<Button-1>",
+                lambda event, p1=canvas, p2=controller, p3=4620 // (rows * cols): column_click(event, p1, p2, p3))
 
     # Example: Label showing game information
     game_label = tk.Label(game_window,
@@ -272,9 +297,9 @@ select_option("Pure Minimax")
 
 display_minimax_tree = False
 tree_display_checkbox = tk.Checkbutton(
-        bottom_frame, text="Display Minimax Tree", command=toggle_minimax_tree_display,
-        bg=button_color, fg=text_color, font=(font_style, 22)
-    )
+    bottom_frame, text="Display Minimax Tree", command=toggle_minimax_tree_display,
+    bg=button_color, fg=text_color, font=(font_style, 22)
+)
 tree_display_checkbox.pack(pady=10)
 
 start_button = tk.Button(bottom_frame, text="Start Game", command=start_game, bg=button_color, fg=text_color,
