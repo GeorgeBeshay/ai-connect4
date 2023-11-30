@@ -136,7 +136,7 @@ def ai_agent_play(state: State) -> State:
     global total_time, counter
     approach = var.get()
     if approach == "Pure Minimax":
-        minimax_solver = Minimax(int(entry_k.get()))
+        minimax_solver = Minimax(int(entry_k.get()), display_minimax_tree)
         start_time = time.time()
         new_state = minimax_solver.run_minimax(state)[1]
         end_time = time.time()
@@ -151,7 +151,7 @@ def ai_agent_play(state: State) -> State:
         print(f"Average time = {total_time / counter} seconds")
         return new_state
     else:
-        minimax_ab_solver = MinimaxWithAlphaBeta(int(entry_k.get()))
+        minimax_ab_solver = MinimaxWithAlphaBeta(int(entry_k.get()), display_minimax_tree)
         start_time = time.time()
         new_state = minimax_ab_solver.run_minimax_with_alpha_beta(state)[1]
         end_time = time.time()

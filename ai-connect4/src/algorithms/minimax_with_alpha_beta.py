@@ -6,10 +6,11 @@ from src.utilities.get_heuristic import calculate_heuristic
 
 class MinimaxWithAlphaBeta:
 
-    def __init__(self, k: int):
+    def __init__(self, k: int, display_minimax_tree: bool):
         self.k = k
         self.explored = {}
         self.tree = None
+        self.display_minimax_tree = display_minimax_tree
 
     def run_minimax_with_alpha_beta(self, initial_state: State) -> Tuple[float, State]:
         """
@@ -21,7 +22,8 @@ class MinimaxWithAlphaBeta:
 
         :return: Tuple of the max value the computer can get and the state of next step
         """
-        self.tree = Tree((initial_state.get_value(), 0))
+        if self.display_minimax_tree:
+            self.tree = Tree((initial_state.get_value(), 0))
         self.explored = {}
         successors = initial_state.get_successors()
         alpha = - float('inf')
@@ -29,12 +31,13 @@ class MinimaxWithAlphaBeta:
         next_step = initial_state
         for successor in successors:
             current_value = self.value(successor, 1, alpha, beta)
-            self.tree.add_child_to_node(initial_state.get_value(), (successor.get_value(), current_value))
+            if self.display_minimax_tree:
+                self.tree.add_child_to_node(initial_state.get_value(), (successor.get_value(), current_value))
             if current_value > alpha:
                 next_step = successor
                 alpha = current_value
-
-        self.tree.set_root((initial_state.get_value(), alpha))
+        if self.display_minimax_tree:
+            self.tree.set_root((initial_state.get_value(), alpha))
         return alpha, next_step
 
     def value(self, state: State, level: int, alpha: float, beta: float) -> float:
@@ -77,8 +80,8 @@ class MinimaxWithAlphaBeta:
 
         for successor in successors:
             child_value = self.value(successor, level + 1, alpha, beta)
-
-            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+            if self.display_minimax_tree:
+                self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
 
             v = min(v, child_value)
 
@@ -94,8 +97,8 @@ class MinimaxWithAlphaBeta:
 
         for successor in successors:
             child_value = self.value(successor, level + 1, alpha, beta)
-
-            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+            if self.display_minimax_tree:
+                self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
 
             v = max(v, child_value)
 
