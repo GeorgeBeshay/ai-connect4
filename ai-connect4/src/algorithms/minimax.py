@@ -64,7 +64,7 @@ class Minimax:
 
         evaluated_value = 0
 
-        if level == self.k:  # terminal state
+        if level == self.k or len(state.get_successors()) == 0:  # terminal state
             evaluated_value = calculate_heuristic(state.to_2d(), 1, 2)
             self.explored[state.get_value()] = evaluated_value
             return evaluated_value
