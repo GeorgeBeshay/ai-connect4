@@ -1,8 +1,19 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 from src.controller.controller import Connect4Controller
+from src.algorithms.minimax import *
+from src.algorithms.minimax_with_alpha_beta import *
 from src.state.state import State
+from src.utilities.get_score import *
 from typing import *
+
+
+def toggle_minimax_tree_display():
+    """
+    Toggle the display of the Minimax tree.
+    """
+    global display_minimax_tree
+    display_minimax_tree = not display_minimax_tree
 
 
 def create_board_canvas(game_window, rows, cols):
@@ -78,9 +89,32 @@ def column_click(event, canvas, controller, cell_size):
     controller.play(event.x // cell_size)
     update_game_board(canvas, controller, cell_size)
 
+    canvas.update()
+
     # Apply the Ai agent move
-    # controller.set_state(ai_agent_play(controller.get_state()))
-    # update_game_board(canvas, controller, cell_size)
+    controller.set_state(ai_agent_play(controller.get_state()))
+    update_game_board(canvas, controller, cell_size)
+
+    # Change the displayed score
+    update_score_label(controller)
+
+
+def update_score_label(controller):
+    global game_label, score_value
+
+    score_value = get_game_score(controller.get_state().to_2d(), 1, 2)
+    selected_option = var.get()  # Get the selected option (A or B)
+    k_value = entry_k.get()  # Get the value of k
+    rows = int(entry_rows.get())  # Get the value of rows
+    cols = int(entry_cols.get())  # Get the value of columns
+
+    game_label.config(text=f"Selected Option: {selected_option}\t"
+                           f"Value of k: {k_value}\t"
+                           f"Rows: {rows}\t"
+                           f"Columns: {cols}\t"
+                           f"Ai Agent VS. Player = ({score_value[0]}, {score_value[1]})",
+                      font=(font_style, 14),
+                      bg="#34495e", fg="white")
 
 
 def ai_agent_play(state: State) -> State:
@@ -95,17 +129,28 @@ def ai_agent_play(state: State) -> State:
     """
     approach = var.get()
     if approach == "Pure Minimax":
-        # TODO Call the minimax alg that returns a column index.
-        pass
+        minimax_solver = Minimax(int(entry_k.get()))
+        new_state = minimax_solver.run_minimax(state)[1]
+        if display_minimax_tree:
+            minimax_solver.tree.display_tree()
+        return new_state
     else:
-        # TODO Call the minimax with ab pruning alg that returns a column index.
-        pass
+        minimax_ab_solver = MinimaxWithAlphaBeta(int(entry_k.get()))
+        new_state = minimax_ab_solver.run_minimax_with_alpha_beta(state)[1]
+        if display_minimax_tree:
+            minimax_ab_solver.tree.display_tree()
+        return new_state
+
+
+game_label: tk.Label
+score_value = (0, 0)
 
 
 def start_game():
     """
         Start the Connect 4 game.
     """
+    global game_label, score_value
     selected_option = var.get()  # Get the selected option (A or B)
     k_value = entry_k.get()  # Get the value of k
     rows = int(entry_rows.get())  # Get the value of rows
@@ -130,8 +175,12 @@ def start_game():
 
     # Example: Label showing game information
     game_label = tk.Label(game_window,
-                          text=f"Selected Option: {selected_option}\tValue of k: {k_value}\tRows: {rows}\tColumns: {cols}",
-                          font=(font_style, 16),
+                          text=f"Selected Option: {selected_option}\t"
+                               f"Value of k: {k_value}\t"
+                               f"Rows: {rows}\t"
+                               f"Columns: {cols}\t"
+                               f"Ai Agent VS. Player = ({score_value[0]}, {score_value[1]})",
+                          font=(font_style, 14),
                           bg="#34495e", fg="white")  # Change label background and text color
     game_label.pack(padx=20, pady=20)
 
@@ -219,6 +268,13 @@ entry_cols.pack(side=tk.LEFT, padx=10)
 entry_cols.insert(0, "7")
 
 select_option("Pure Minimax")
+
+display_minimax_tree = False
+tree_display_checkbox = tk.Checkbutton(
+        bottom_frame, text="Display Minimax Tree", command=toggle_minimax_tree_display,
+        bg=button_color, fg=text_color, font=(font_style, 22)
+    )
+tree_display_checkbox.pack(pady=10)
 
 start_button = tk.Button(bottom_frame, text="Start Game", command=start_game, bg=button_color, fg=text_color,
                          font=(font_style, 28, "bold"), relief=tk.GROOVE)
