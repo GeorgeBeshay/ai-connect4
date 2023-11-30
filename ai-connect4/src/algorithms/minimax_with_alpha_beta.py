@@ -58,13 +58,11 @@ class MinimaxWithAlphaBeta:
             return self.explored[state.get_value()]
 
         evaluated_value = 0
-        if level == self.k:
-            if state.get_value() not in self.explored:
-                evaluated_value = calculate_heuristic(state.to_2d(), 1, 2)
-                self.explored[state.get_value()] = evaluated_value
-                return evaluated_value
-            else:
-                return self.explored[state.get_value()]
+        if level == self.k or len(state.get_successors()) == 0:  # terminal state
+            evaluated_value = calculate_heuristic(state.to_2d(), 1, 2)
+            self.explored[state.get_value()] = evaluated_value
+            return evaluated_value
+
         if state.is_computer_turn():
             evaluated_value = self.max_value(state, level, alpha, beta)
         else:

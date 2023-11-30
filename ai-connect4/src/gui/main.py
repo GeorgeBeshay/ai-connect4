@@ -30,7 +30,8 @@ def create_board_canvas(game_window, rows, cols):
         :return: The created canvas for the game board.
         :rtype: tk.Canvas
     """
-    canvas = tk.Canvas(game_window, width=110 * cols, height=110 * rows, bg="#3498db")
+    cell_size = 4620 / (rows * cols)
+    canvas = tk.Canvas(game_window, width=cell_size * cols, height=cell_size * rows, bg="#3498db")
     canvas.pack(padx=20, pady=20)
     return canvas
 
@@ -168,10 +169,10 @@ def start_game():
     # Create the game board controller
     controller = Connect4Controller(cols, rows)
     canvas = create_board_canvas(game_window, rows, cols)
-    update_game_board(canvas, controller, 110)  # Initial board setup
+    update_game_board(canvas, controller, cell_size=4620 // (rows * cols))  # Initial board setup
 
     # Bind the event for column click
-    canvas.bind("<Button-1>", lambda event, p1=canvas, p2=controller, p3=110: column_click(event, p1, p2, p3))
+    canvas.bind("<Button-1>", lambda event, p1=canvas, p2=controller, p3=4620 // (rows * cols): column_click(event, p1, p2, p3))
 
     # Example: Label showing game information
     game_label = tk.Label(game_window,
