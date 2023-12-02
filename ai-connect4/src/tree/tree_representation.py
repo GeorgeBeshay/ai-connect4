@@ -65,3 +65,6 @@ class Tree:
             :type root: Tuple[int, float]
         """
         self.root = root
+
+    def no_of_nodes_expanded(self):
+        return len(self.identifier)

@@ -29,21 +29,21 @@ class Minimax:
 
         :return: Tuple of the max value the computer can get and the state of next step
         """
-        if self.display_minimax_tree:
-            self.tree = Tree((initial_state.get_value(), 0))
+        # if self.display_minimax_tree:
+        self.tree = Tree((initial_state.get_value(), 0))
         self.explored = {}
         successors = initial_state.get_successors()
         max_value = - float('inf')
         next_step = initial_state
         for successor in successors:
             current_value = self.value(successor, 1)
-            if self.display_minimax_tree:
-                self.tree.add_child_to_node(initial_state.get_value(), (successor.get_value(), current_value))
+            # if self.display_minimax_tree:
+            self.tree.add_child_to_node(initial_state.get_value(), (successor.get_value(), current_value))
             if current_value > max_value:
                 next_step = successor
                 max_value = current_value
-        if self.display_minimax_tree:
-            self.tree.set_root((initial_state.get_value(), max_value))
+        # if self.display_minimax_tree:
+        self.tree.set_root((initial_state.get_value(), max_value))
         return max_value, next_step
 
     def value(self, state: State, level: int):
@@ -96,8 +96,8 @@ class Minimax:
 
         for successor in successors:
             child_value = self.value(successor, level + 1)
-            if self.display_minimax_tree:
-                self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+            # if self.display_minimax_tree:
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
 
             v = max(v, child_value)
 
@@ -119,8 +119,8 @@ class Minimax:
 
         for successor in successors:
             child_value = self.value(successor, level + 1)
-            if self.display_minimax_tree:
-                self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
+            # if self.display_minimax_tree:
+            self.tree.add_child_to_node(state.get_value(), (successor.get_value(), child_value))
 
             v = min(v, child_value)
 

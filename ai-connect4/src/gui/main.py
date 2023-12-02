@@ -121,7 +121,7 @@ def update_score_label(controller):
 
 total_time = 0
 counter = 0
-
+expanded = 0
 
 def ai_agent_play(state: State) -> State:
     """
@@ -133,7 +133,7 @@ def ai_agent_play(state: State) -> State:
         :return: The updated state after the AI agent's move.
         :rtype: State
     """
-    global total_time, counter
+    global total_time, counter, expanded
     approach = var.get()
     if approach == "Pure Minimax":
         minimax_solver = Minimax(int(entry_k.get()), display_minimax_tree)
@@ -149,6 +149,8 @@ def ai_agent_play(state: State) -> State:
         # print(f"AI move took {elapsed_time} seconds")
         # print(f"Counter = {counter}")
         print(f"Average time = {total_time / counter} seconds")
+        expanded += minimax_solver.tree.no_of_nodes_expanded()
+        print(f"Total Number of nodes expanded = {expanded} nodes")
         return new_state
     else:
         minimax_ab_solver = MinimaxWithAlphaBeta(int(entry_k.get()), display_minimax_tree)
@@ -163,7 +165,8 @@ def ai_agent_play(state: State) -> State:
         counter += 1
         # print(f"AI move took {elapsed_time} seconds")
         print(f"Average time = {total_time / counter} seconds")
-        # print(f"Counter = {counter}")
+        expanded += minimax_ab_solver.tree.no_of_nodes_expanded()
+        print(f"Total Number of nodes expanded = {expanded} nodes")
         return new_state
 
 
